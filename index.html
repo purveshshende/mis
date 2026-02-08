@@ -296,7 +296,7 @@
     let yesScale = 1;
     function growYes() {
       yesScale = Math.min(2.2, yesScale + 0.1);
-      yesBtn.style.transform = translateY(-50%) scale(${yesScale});
+      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
     function clamp(n, min, max) {
@@ -346,4 +346,4 @@
     });
   </script>
 </body>
-</html> 
+</html>
