@@ -42,7 +42,7 @@
       width: min(720px, 92vw);
       max-height: 92svh;
       overflow-y: auto;
-      padding: 25px;
+      padding: 30px 20px;
       background: var(--card);
       backdrop-filter: blur(10px);
       border-radius: 22px;
@@ -50,12 +50,12 @@
       box-shadow: 0 18px 60px rgba(0,0,0,.15);
     }
 
-    /* THE CAT (Visible on main screen) */
+    /* THE CAT SVG (Main Screen) */
     .art {
-      width: min(240px, 65vw);
+      width: min(240px, 70vw);
       height: auto;
       margin: 0 auto 10px;
-      display: block;
+      display: block; /* Visible here */
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
       animation: float 3s ease-in-out infinite;
     }
@@ -69,7 +69,7 @@
     .button-zone {
       position: relative;
       width: 100%;
-      height: 140px;
+      height: 160px;
       margin: 10px 0;
       touch-action: none;
     }
@@ -78,8 +78,8 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      padding: 15px 30px;
-      font-size: 18px;
+      padding: 16px 32px;
+      font-size: 20px;
       font-weight: 800;
       border-radius: 999px;
       border: none;
@@ -101,7 +101,7 @@
       color: #111827;
     }
 
-    /* SUCCESS STATE */
+    /* SUCCESS SCREEN */
     .result {
       display: none;
       animation: pop .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -110,15 +110,16 @@
     .result h2 {
       font-size: clamp(36px, 8vw, 60px);
       color: var(--yes);
-      margin-bottom: 20px;
+      margin: 0 0 20px;
     }
 
     .fireworks {
-      width: min(320px, 85vw);
+      width: min(340px, 85vw);
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
+    /* Animations */
     @keyframes pop {
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
@@ -132,7 +133,7 @@
     .heart { transform-origin: center; animation: pulse 1.2s infinite; }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
+      50% { transform: scale(1.18); }
     }
   </style>
 </head>
@@ -149,6 +150,7 @@
           <linearGradient id="heartGrad" x1="0" x2="1"><stop offset="0" stop-color="#ff5c8a"/><stop offset="1" stop-color="#ff2f6d"/></linearGradient>
         </defs>
         <path class="heart" d="M240 40 C240 25 260 20 272 32 C284 20 304 25 304 40 C304 65 272 80 272 94 C272 80 240 65 240 40Z" fill="url(#heartGrad)"/>
+        
         <circle cx="160" cy="135" r="70" fill="url(#fur)"/>
         <path d="M115 85 L90 35 L135 70 Z" fill="#ffb37a"/><path d="M205 85 L230 35 L185 70 Z" fill="#ffb37a"/>
         <path d="M118 80 L102 48 L132 70 Z" fill="#ff9bb5"/><path d="M202 80 L218 48 L188 70 Z" fill="#ff9bb5"/>
@@ -167,13 +169,13 @@
         <button id="noBtn">No</button>
       </section>
       
-      <p id="hint" style="opacity: 0.6; font-size: 14px;">PLEASE 🥺</p>
+      <p style="opacity: 0.7; font-size: 1.1rem;">PLEASE 🥺</p>
     </div>
 
     <section class="result" id="result">
       <h2>YAY! 🎉</h2>
-      <img class="fireworks" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExczA2aWJteHY4OXg2OWxiZWppMXZyeTYya3k2cm5ydDJnaG13OWI2biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vqvmGLZdqxNzCtVlR3/giphy.gif" alt="Fireworks GIF" />
-      <p style="font-size: 1.2rem; margin-top: 15px; font-weight: bold; color: #ff3b7a;">See you on the 14th! ❤️</p>
+      <img class="fireworks" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExczA2aWJteHY4OXg2OWxiZWppMXZyeTYya3k2cm5ydDJnaG13OWI2biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vqvmGLZdqxNzCtVlR3/giphy.gif" alt="Celebration GIF" />
+      <p style="font-size: 1.3rem; margin-top: 20px; font-weight: bold; color: #ff3b7a;">You made my day! ❤️</p>
     </section>
 
   </main>
@@ -197,20 +199,21 @@
     const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker: true });
 
     function launchCelebration() {
-      const duration = 3 * 1000;
+      const duration = 4 * 1000;
       const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-      function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-      const interval = setInterval(function() {
+      (function frame() {
         const timeLeft = animationEnd - Date.now();
-        if (timeLeft <= 0) return clearInterval(interval);
+        if (timeLeft <= 0) return;
 
-        const particleCount = 50 * (timeLeft / duration);
-        confettiInstance({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-        confettiInstance({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-      }, 250);
+        confettiInstance({
+          particleCount: 3,
+          spread: 60,
+          origin: { x: Math.random(), y: Math.random() - 0.2 },
+          colors: ['#ff3b7a', '#ffd6e7', '#ffffff']
+        });
+        requestAnimationFrame(frame);
+      })();
     }
 
     let yesScale = 1;
@@ -221,8 +224,8 @@
       let dy = (b.top + b.height / 2) - py;
       let mag = Math.hypot(dx, dy) || 1;
 
-      let newLeft = (b.left - z.left) + (dx / mag) * 100;
-      let newTop  = (b.top - z.top) + (dy / mag) * 100;
+      let newLeft = (b.left - z.left) + (dx / mag) * 110;
+      let newTop  = (b.top - z.top) + (dy / mag) * 110;
 
       newLeft = Math.max(0, Math.min(z.width - b.width, newLeft));
       newTop  = Math.max(0, Math.min(z.height - b.height, newTop));
@@ -231,19 +234,19 @@
       noBtn.style.top = newTop + "px";
       noBtn.style.transform = "none";
 
-      yesScale = Math.min(2.5, yesScale + 0.1);
+      yesScale = Math.min(2.8, yesScale + 0.12);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
     zone.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const d = Math.hypot((b.left + b.width / 2) - e.clientX, (b.top + b.height / 2) - e.clientY);
-      if (d < 100) moveNo(e.clientX, e.clientY);
+      if (d < 110) moveNo(e.clientX, e.clientY);
     });
 
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      yesBtn.click(); // If they manage to click it, trigger Yes anyway
+      yesBtn.click();
     });
 
     yesBtn.addEventListener("click", () => {
