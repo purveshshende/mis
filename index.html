@@ -2,21 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Yes Click Reveal</title>
+  <title>Reveal After Yes</title>
 
   <style>
     body {
       margin: 0;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       background: #fff7f9;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .screen {
-      position: absolute;
+      position: fixed;
       inset: 0;
       display: flex;
       flex-direction: column;
@@ -24,14 +21,9 @@
       align-items: center;
     }
 
-    /* Initial screen */
-    #question-screen {
-      background: #fff7f9;
-    }
-
     h1 {
       font-size: 2rem;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     button {
@@ -48,12 +40,6 @@
       background: #ff2f68;
     }
 
-    /* GIF screen */
-    #gif-screen {
-      display: none; /* 🔴 CRITICAL: hidden by default */
-      background: #fff7f9;
-    }
-
     img {
       max-width: 320px;
     }
@@ -62,22 +48,22 @@
 
 <body>
 
-  <!-- SCREEN 1 -->
+  <!-- SCREEN 1: QUESTION -->
   <div id="question-screen" class="screen">
     <h1>Will you be my Valentine? 💖</h1>
-    <button onclick="showGif()">Yes</button>
+    <button id="yesBtn">Yes</button>
   </div>
 
-  <!-- SCREEN 2 -->
-  <div id="gif-screen" class="screen">
-    <img src="your-gif-url-here.gif" alt="Cute gif" />
+  <!-- SCREEN 2: GIF (COMPLETELY HIDDEN INITIALLY) -->
+  <div id="gif-screen" class="screen" hidden>
+    <img src="your-gif-url-here.gif" alt="Cute gif">
   </div>
 
   <script>
-    function showGif() {
-      document.getElementById("question-screen").style.display = "none";
-      document.getElementById("gif-screen").style.display = "flex";
-    }
+    document.getElementById("yesBtn").addEventListener("click", () => {
+      document.getElementById("question-screen").hidden = true;
+      document.getElementById("gif-screen").hidden = false;
+    });
   </script>
 
 </body>
