@@ -2,333 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Will you be my Valentine?</title>
-
-  <!-- Confetti library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <title>Yes Click Reveal</title>
 
   <style>
-    :root {
-      --bg1: #ffd6e7;
-      --bg2: #ffeef6;
-      --card: #ffffffcc;
-      --yes: #ff3b7a;
-      --yesHover: #ff1f68;
-    }
-
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-      font-family: system-ui, sans-serif;
-      overflow: hidden;
-      padding: 16px;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fff7f9;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    #confettiCanvas {
-      position: fixed;
+    .screen {
+      position: absolute;
       inset: 0;
-      pointer-events: none;
-      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
-    .card {
-      width: min(720px, 92vw);
-      max-height: 92svh;
-      overflow-y: auto;
-      padding: 22px 20px;
-      background: var(--card);
-      backdrop-filter: blur(10px);
-      border-radius: 22px;
-      text-align: center;
-      box-shadow: 0 18px 60px rgba(0,0,0,.15);
-      transition: padding .3s ease;
-    }
-
-    .art {
-      width: min(260px, 70vw);
-      max-height: 35svh;
-      margin: 0 auto 8px;
-      display: block;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
-      animation: float 3s ease-in-out infinite;
+    /* Initial screen */
+    #question-screen {
+      background: #fff7f9;
     }
 
     h1 {
-      font-size: clamp(26px, 4vw, 44px);
-      margin: 8px 0 10px;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-    }
-
-    .button-zone {
-      position: relative;
-      width: min(520px, 92%);
-      height: 150px;
-      margin: 0 auto;
-      touch-action: none;
+      font-size: 2rem;
+      margin-bottom: 20px;
     }
 
     button {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 16px 24px;
-      font-size: 18px;
-      font-weight: 800;
-      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border-radius: 24px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.14);
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease, background .12s ease;
+      background: #ff4d7d;
+      color: white;
     }
 
-    #yesBtn {
-      left: 18%;
-      background: var(--yes);
-      color: #fff;
+    button:hover {
+      background: #ff2f68;
     }
 
-    #yesBtn:hover { background: var(--yesHover); }
-
-    #noBtn {
-      left: 62%;
-      background: #e5e7eb;
-      color: #111827;
+    /* GIF screen */
+    #gif-screen {
+      display: none; /* 🔴 CRITICAL: hidden by default */
+      background: #fff7f9;
     }
 
-    .hint {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: .7;
-    }
-
-    /* RESULT SCREEN */
-    .result {
-      display: none;
-      min-height: 60svh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: pop .35s ease;
-    }
-
-    .fireworks {
-      width: min(380px, 90vw);
-    }
-
-    @keyframes pop {
-      from { transform: scale(.96); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-      100% { transform: translateY(0); }
-    }
-
-    .heart {
-      transform-origin: center;
-      animation: pulse 1.2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
+    img {
+      max-width: 320px;
     }
   </style>
 </head>
 
 <body>
-  <canvas id="confettiCanvas"></canvas>
 
-  <main class="card" id="card">
+  <!-- SCREEN 1 -->
+  <div id="question-screen" class="screen">
+    <h1>Will you be my Valentine? 💖</h1>
+    <button onclick="showGif()">Yes</button>
+  </div>
 
-    <!-- QUESTION SCREEN -->
-    <section id="questionScreen">
-
-      <!-- CUTE CAT -->
-      <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="fur" x1="0" x2="1">
-            <stop offset="0" stop-color="#ffd6b0"/>
-            <stop offset="1" stop-color="#ffb37a"/>
-          </linearGradient>
-
-          <linearGradient id="heartGrad" x1="0" x2="1">
-            <stop offset="0" stop-color="#ff5c8a"/>
-            <stop offset="1" stop-color="#ff2f6d"/>
-          </linearGradient>
-        </defs>
-
-        <path class="heart"
-          d="M240 40 C240 25 260 20 272 32
-             C284 20 304 25 304 40
-             C304 65 272 80 272 94
-             C272 80 240 65 240 40Z"
-          fill="url(#heartGrad)"/>
-
-        <circle cx="160" cy="135" r="70" fill="url(#fur)"/>
-
-        <path d="M115 85 L90 35 L135 70 Z" fill="#ffb37a"/>
-        <path d="M205 85 L230 35 L185 70 Z" fill="#ffb37a"/>
-
-        <path d="M118 80 L102 48 L132 70 Z" fill="#ff9bb5"/>
-        <path d="M202 80 L218 48 L188 70 Z" fill="#ff9bb5"/>
-
-        <circle cx="140" cy="135" r="7"/>
-        <circle cx="180" cy="135" r="7"/>
-
-        <path d="M160 145
-                 C155 145 150 150 150 154
-                 C150 158 155 162 160 162
-                 C165 162 170 158 170 154
-                 C170 150 165 145 160 145Z"
-              fill="#ff7aa2"/>
-
-        <path d="M160 162 C155 170 145 170 142 168"
-              stroke="#333" stroke-width="2" fill="none"/>
-        <path d="M160 162 C165 170 175 170 178 168"
-              stroke="#333" stroke-width="2" fill="none"/>
-
-        <line x1="120" y1="150" x2="90" y2="145" stroke="#555" stroke-width="2"/>
-        <line x1="120" y1="158" x2="90" y2="160" stroke="#555" stroke-width="2"/>
-        <line x1="200" y1="150" x2="230" y2="145" stroke="#555" stroke-width="2"/>
-        <line x1="200" y1="158" x2="230" y2="160" stroke="#555" stroke-width="2"/>
-      </svg>
-
-      <h1>Misbah! Will you be my Valentine? 💕</h1>
-      <h2>PLEASE 🥺</h2>
-
-      <section class="button-zone" id="zone">
-        <button id="yesBtn">Yes</button>
-        <button id="noBtn">No</button>
-      </section>
-
-      <div class="hint" id="hint">“No” seems a bit shy 😈</div>
-    </section>
-
-    <!-- RESULT SCREEN -->
-    <section class="result" id="result">
-      <img
-        class="fireworks"
-        src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExczA2aWJteHY4OXg2OWxiZWppMXZyeTYya3k2cm5ydDJnaG13OWI2biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vqvmGLZdqxNzCtVlR3/giphy.gif"
-        alt="Fireworks"
-      />
-    </section>
-
-  </main>
+  <!-- SCREEN 2 -->
+  <div id="gif-screen" class="screen">
+    <img src="your-gif-url-here.gif" alt="Cute gif" />
+  </div>
 
   <script>
-    const zone = document.getElementById("zone");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const result = document.getElementById("result");
-    const questionScreen = document.getElementById("questionScreen");
-    const card = document.getElementById("card");
-
-    const confettiCanvas = document.getElementById("confettiCanvas");
-
-    function resizeConfettiCanvas() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      confettiCanvas.width = window.innerWidth * dpr;
-      confettiCanvas.height = window.innerHeight * dpr;
+    function showGif() {
+      document.getElementById("question-screen").style.display = "none";
+      document.getElementById("gif-screen").style.display = "flex";
     }
-
-    resizeConfettiCanvas();
-    window.addEventListener("resize", resizeConfettiCanvas);
-
-    const confettiInstance = confetti.create(confettiCanvas, {
-      resize: false,
-      useWorker: true
-    });
-
-    function fullScreenConfetti() {
-      const end = Date.now() + 1600;
-      (function frame() {
-        confettiInstance({
-          particleCount: 12,
-          spread: 90,
-          startVelocity: 45,
-          ticks: 180,
-          origin: { x: Math.random(), y: Math.random() * 0.3 }
-        });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      })();
-
-      setTimeout(() => {
-        confettiInstance({
-          particleCount: 300,
-          spread: 140,
-          startVelocity: 60,
-          ticks: 220,
-          origin: { x: 0.5, y: 0.55 }
-        });
-      }, 300);
-    }
-
-    let yesScale = 1;
-    function growYes() {
-      yesScale = Math.min(2.2, yesScale + 0.1);
-      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
-    }
-
-    function clamp(n, min, max) {
-      return Math.max(min, Math.min(max, n));
-    }
-
-    function moveNo(px, py) {
-      const z = zone.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-
-      let dx = (b.left + b.width / 2) - px;
-      let dy = (b.top + b.height / 2) - py;
-      let mag = Math.hypot(dx, dy) || 1;
-      dx /= mag;
-      dy /= mag;
-
-      let newLeft = (b.left - z.left) + dx * 150;
-      let newTop  = (b.top - z.top) + dy * 150;
-
-      newLeft = clamp(newLeft, 0, z.width - b.width);
-      newTop  = clamp(newTop, 0, z.height - b.height);
-
-      noBtn.style.left = newLeft + "px";
-      noBtn.style.top = newTop + "px";
-      noBtn.style.transform = "none";
-
-      growYes();
-    }
-
-    zone.addEventListener("pointermove", e => {
-      const b = noBtn.getBoundingClientRect();
-      const d = Math.hypot(
-        (b.left + b.width / 2) - e.clientX,
-        (b.top + b.height / 2) - e.clientY
-      );
-      if (d < 140) moveNo(e.clientX, e.clientY);
-    });
-
-    noBtn.addEventListener("click", e => e.preventDefault());
-
-    yesBtn.addEventListener("click", () => {
-      questionScreen.style.display = "none";
-      result.style.display = "flex";
-      card.style.padding = "12px";
-      resizeConfettiCanvas();
-      fullScreenConfetti();
-    });
   </script>
+
 </body>
 </html>
