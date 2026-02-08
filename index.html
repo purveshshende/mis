@@ -50,12 +50,11 @@
       box-shadow: 0 18px 60px rgba(0,0,0,.15);
     }
 
-    /* THE CAT SVG (Main Screen) */
     .art {
       width: min(240px, 70vw);
       height: auto;
       margin: 0 auto 10px;
-      display: block; /* Visible here */
+      display: block;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
       animation: float 3s ease-in-out infinite;
     }
@@ -101,7 +100,6 @@
       color: #111827;
     }
 
-    /* SUCCESS SCREEN */
     .result {
       display: none;
       animation: pop .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -119,7 +117,6 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
-    /* Animations */
     @keyframes pop {
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
@@ -150,7 +147,6 @@
           <linearGradient id="heartGrad" x1="0" x2="1"><stop offset="0" stop-color="#ff5c8a"/><stop offset="1" stop-color="#ff2f6d"/></linearGradient>
         </defs>
         <path class="heart" d="M240 40 C240 25 260 20 272 32 C284 20 304 25 304 40 C304 65 272 80 272 94 C272 80 240 65 240 40Z" fill="url(#heartGrad)"/>
-        
         <circle cx="160" cy="135" r="70" fill="url(#fur)"/>
         <path d="M115 85 L90 35 L135 70 Z" fill="#ffb37a"/><path d="M205 85 L230 35 L185 70 Z" fill="#ffb37a"/>
         <path d="M118 80 L102 48 L132 70 Z" fill="#ff9bb5"/><path d="M202 80 L218 48 L188 70 Z" fill="#ff9bb5"/>
@@ -163,13 +159,13 @@
       </svg>
 
       <h1>Misbah! Will you be my Valentine? 💕</h1>
-      <h2>PLEASE 🥺</h2>
+      
       <section class="button-zone" id="zone">
         <button id="yesBtn">Yes</button>
         <button id="noBtn">No</button>
       </section>
       
-      
+      <p style="opacity: 0.7; font-size: 1.1rem;">PLEASE 🥺</p>
     </div>
 
     <section class="result" id="result">
@@ -199,18 +195,23 @@
     const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker: true });
 
     function launchCelebration() {
-      const duration = 4 * 1000;
+      const duration = 5 * 1000;
       const animationEnd = Date.now() + duration;
 
       (function frame() {
         const timeLeft = animationEnd - Date.now();
         if (timeLeft <= 0) return;
 
+        // BIGGER CONFETTI SETTINGS
         confettiInstance({
-          particleCount: 3,
-          spread: 60,
+          particleCount: 2,         // Lower count per frame because they are bigger
+          spread: 70,
           origin: { x: Math.random(), y: Math.random() - 0.2 },
-          colors: ['#ff3b7a', '#ffd6e7', '#ffffff']
+          colors: ['#ff3b7a', '#ffd6e7', '#ffffff', '#ff9bb5'],
+          scalar: 2.5,              // <--- THIS MAKES THEM BIGGER (Default is 1)
+          drift: 0.5,
+          gravity: 0.8,             // Slower fall for "larger" feel
+          ticks: 200
         });
         requestAnimationFrame(frame);
       })();
@@ -257,5 +258,3 @@
   </script>
 </body>
 </html>
-
-
